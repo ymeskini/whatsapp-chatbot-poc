@@ -41,9 +41,9 @@ const handleWebhook = async (req: VercelRequest, res: VercelResponse) => {
 
       await whatsAppService.sendMessage(from, "Ack: " + msg_body);
     }
-    res.status(200);
+    res.status(200).send("EVENT_RECEIVED");
   } else {
-    res.status(404);
+    res.status(404).send("Not Found");
   }
 };
 
@@ -54,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     case "GET":
       return handleTokenVerification(req, res);
     default:
-      res.status(404);
+      res.status(404).send("Not Found");
       break;
   }
 }

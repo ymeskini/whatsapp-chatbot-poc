@@ -1,0 +1,12 @@
+{
+  "name": "whatsapp-chatbot-poc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@vercel/node": "^2.8.1"
+  },
+  "dependencies": {
+    "axios": "^1.2.1"
+  }
+}

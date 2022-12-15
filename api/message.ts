@@ -22,7 +22,7 @@ const handleTokenVerification = (req: VercelRequest, res: VercelResponse) => {
   }
 };
 
-const handleWebhook = (req: VercelRequest, res: VercelResponse) => {
+const handleWebhook = async (req: VercelRequest, res: VercelResponse) => {
   const whatsappMessage = req.body as WhatsappMessage;
 
   if (whatsappMessage.object) {
@@ -33,13 +33,13 @@ const handleWebhook = (req: VercelRequest, res: VercelResponse) => {
       whatsappMessage.entry[0].changes[0].value.messages &&
       whatsappMessage.entry[0].changes[0].value.messages[0]
     ) {
-      const phone_number_id =
-        whatsappMessage.entry[0].changes[0].value.metadata.phone_number_id;
+      // const phone_number_id =
+      //   whatsappMessage.entry[0].changes[0].value.metadata.phone_number_id;
       const from = whatsappMessage.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
       const msg_body =
         whatsappMessage.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
 
-      whatsAppService.sendMessage(from, "Ack: " + msg_body);
+      await whatsAppService.sendMessage(from, "Ack: " + msg_body);
     }
     res.status(200);
   } else {
@@ -47,10 +47,10 @@ const handleWebhook = (req: VercelRequest, res: VercelResponse) => {
   }
 };
 
-export default function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   switch (req.method) {
     case "POST":
-      return handleWebhook(req, res);
+      await handleWebhook(req, res);
     case "GET":
       return handleTokenVerification(req, res);
     default:

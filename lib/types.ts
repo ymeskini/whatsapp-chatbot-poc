@@ -6,17 +6,17 @@ export type WhatsappMessage = {
       changes: [
         {
           value: {
-            messaging_product: "whatsapp";
+            messaging_product: string;
             metadata: {
-              display_phone_number: "PHONE-NUMBER";
-              phone_number_id: "PHONE-NUMBER-ID";
+              display_phone_number: string;
+              phone_number_id: string;
             };
             contacts: any[];
             errors: any[];
             messages: any[];
             statuses: any[];
           };
-          field: "messages";
+          field: string;
         }
       ];
     }

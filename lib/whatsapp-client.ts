@@ -10,8 +10,8 @@ class WhatsAppService {
   constructor() {
     this.client = axios.create({
       baseURL: `${WHATSAPP_API_URL}/${WHATSAPP_API_VERSION}/${WHATSAPP_PHONE_NUMBER_ID}`,
-      params: {
-        access_token: process.env.WHATSAPP_TOKEN,
+      headers: {
+        Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
       },
     });
   }

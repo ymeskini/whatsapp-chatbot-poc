@@ -1,6 +1,15 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
+import axios from "axios";
+
 import { WhatsappMessage } from "../lib/types";
 import { whatsAppService } from "../lib/whatsapp-client";
+
+const users = {
+  442645: {
+    firstName: "John",
+    lastName: "Doe",
+  },
+};
 
 const handleTokenVerification = (req: VercelRequest, res: VercelResponse) => {
   // Parse params from the webhook verification request
@@ -39,7 +48,10 @@ const handleWebhook = async (req: VercelRequest, res: VercelResponse) => {
       const msg_body =
         whatsappMessage.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
 
-      await whatsAppService.sendMessage(from, "Ack: " + msg_body);
+      const response = msg_body.includes("442645")
+        ? `Welcome ${users[442645].firstName} ${users[442645].lastName}`
+        : "Please send your identification number";
+      await whatsAppService.sendMessage(from, response);
     }
     res.status(200).send("EVENT_RECEIVED");
   } else {
@@ -48,13 +60,20 @@ const handleWebhook = async (req: VercelRequest, res: VercelResponse) => {
 };
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  switch (req.method) {
-    case "POST":
-      await handleWebhook(req, res);
-    case "GET":
-      return handleTokenVerification(req, res);
-    default:
-      res.status(404).send("Not Found");
-      break;
+  try {
+    switch (req.method) {
+      case "POST":
+        await handleWebhook(req, res);
+      case "GET":
+        return handleTokenVerification(req, res);
+      default:
+        res.status(404).send("Not Found");
+        break;
+    }
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      console.log(err.response);
+    }
+    res.status(500).send("Internal Server Error");
   }
 }
